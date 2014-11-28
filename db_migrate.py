@@ -1,3 +1,4 @@
+#!flask/bin/python3
 import imp
 from migrate.versioning import api
 from app import db
@@ -11,7 +12,7 @@ exec(old_model, tmp_module.__dict__)
 #print(tmp_module.meta.schema)
 script = api.make_update_script_for_model(SQLALCHEMY_DATABASE_URI, 
 			SQLALCHEMY_MIGRATE_REPO, tmp_module.meta, db.metadata)
-open(migration, "wt".write(script))
+open(migration, "wt").write(script)
 api.upgrade(SQLALCHEMY_DATABASE_URI, SQLALCHEMY_MIGRATE_REPO)
 v = api.db_version(SQLALCHEMY_DATABASE_URI, SQLALCHEMY_MIGRATE_REPO)
 print('New migration saved as ' + migration)
