@@ -8,7 +8,7 @@ from flask.ext.login import login_user, logout_user, current_user, login_require
 @app.route('/index')
 @login_required
 def index():
-	user = {'nickname': 'Rob'} # fake user
+	user = g.user
 	items = [
 		{
 			'owner': {'nickname': 'Bill'},
@@ -38,8 +38,7 @@ def login():
 	form = LoginForm()
 	if form.validate_on_submit():
 		session['remember_me'] = form.remember_me.data
-		return oid.try_login(form.openid.data, ask_for=['nickname',
-														'email'])
+		return oid.try_login(form.openid.data, ask_for=['nickname', 'email'])
 	return render_template('login.html',
 						   title='Sign In',
 						   form=form,
@@ -68,3 +67,8 @@ def after_login(resp):
 @app.before_request
 def before_request():
 	g.user = current_user
+
+@app.route('/logout')
+def logout():
+	logout_user()
+	return redirect(url_for('index'))
